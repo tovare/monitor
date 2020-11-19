@@ -39,6 +39,18 @@ var tests = TestMap{
 		Tested:     time.Now(),
 		Success:    true,
 	},
+	"navno": {
+		URL:        "https://nav.no/",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+	},
+	"arbeidsplassen": {
+		URL:        "https://arbeidsplassen.nav.no/",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+	},
 }
 
 // RunTest runs all the tests and compares to prior test. If
