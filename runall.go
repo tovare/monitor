@@ -79,8 +79,8 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 		if err != nil {
 			return
 		}
-		return
 	}
+	return
 }
 
 // TestURL runs a single test and returns the test-results.
