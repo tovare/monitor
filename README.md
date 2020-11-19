@@ -9,7 +9,7 @@ The monitor is triggered every 5 minutes using a Cloud Trigger.
 The tests are executed and compared against the prior results stored in
 a Firestore database. If the status  has  changed an email is sent.
 
-Each time all tests are runned the results are stored in Firestore.
+Each time all tests are executed the results are stored in Firestore.
 
 
 # Future improvements
