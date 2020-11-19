@@ -16,10 +16,11 @@ type PubSubMessage struct {
 
 // Test Definitions
 type TestResult struct {
-	URL        string    `firestore:"url,omitempty"`
-	StatusCode int       `firestore:"lastresult,omitempty"`
-	Tested     time.Time `firestore:"testedtime,omitempty"`
-	Success    bool      `firestore:"success"`
+	URL        string        `firestore:"url,omitempty"`
+	StatusCode int           `firestore:"lastresult,omitempty"`
+	Tested     time.Time     `firestore:"testedtime,omitempty"`
+	Success    bool          `firestore:"success"`
+	Duration   time.Duration `firestore:"duration,omitempty"`
 }
 
 type TestMap map[string]TestResult
@@ -32,24 +33,28 @@ var tests = TestMap{
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,
+		Duration:   0,
 	},
 	"alleyoop": {
 		URL:        "https://alleyoop.no/",
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,
+		Duration:   0,
 	},
 	"navno": {
 		URL:        "https://nav.no/",
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,
+		Duration:   0,
 	},
 	"arbeidsplassen": {
 		URL:        "https://arbeidsplassen.nav.no/",
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,
+		Duration:   0,
 	},
 }
 
@@ -61,7 +66,10 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 
 	// Run all tests
 	for i := range tests {
+		start := time.Now()
 		t := TestURL(tests[i])
+		t.Duration = time.Since(start)
+		t.Tested = start
 		tests[i] = t
 	}
 	// After completing all the tests we need to figure out
@@ -97,6 +105,7 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 
 // TestURL runs a single test and returns the test-results.
 func TestURL(test TestResult) TestResult {
+
 	resp, err := http.Get(test.URL)
 	if err != nil {
 		if resp != nil {
@@ -105,7 +114,6 @@ func TestURL(test TestResult) TestResult {
 			test.StatusCode = -1
 		}
 		test.Success = false
-		test.Tested = time.Now()
 		return test
 	}
 	defer resp.Body.Close()
@@ -116,8 +124,8 @@ func TestURL(test TestResult) TestResult {
 		test.Success = false
 	}
 	_, err = ioutil.ReadAll(resp.Body)
+
 	// TODO: Extend with content check.
-	test.Tested = time.Now()
 	return test
 }
 

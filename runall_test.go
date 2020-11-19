@@ -10,7 +10,8 @@ func TestRunTests(t *testing.T) {
 }
 
 func TestWriteToDatabase(t *testing.T) {
-	err := WriteToDatabase(context.Background(), tests)
+	m, err := ReadDatabase(context.Background(), tests)
+	err = WriteToDatabase(context.Background(), m)
 	if err != nil {
 		t.Fatal(err)
 	}
