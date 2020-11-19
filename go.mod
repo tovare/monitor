@@ -1,6 +1,6 @@
 module github.com/tovare/monitor
 
-go 1.15
+go 1.13
 
 require (
 	cloud.google.com/go v0.72.0 
