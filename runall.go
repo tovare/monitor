@@ -21,6 +21,7 @@ type TestResult struct {
 	Tested     time.Time     `firestore:"testedtime,omitempty"`
 	Success    bool          `firestore:"success"`
 	Duration   time.Duration `firestore:"duration,omitempty"`
+	DurationMS int64         `firestore:"durationms,omitempty"`
 }
 
 type TestMap map[string]TestResult
@@ -30,6 +31,20 @@ type TestMap map[string]TestResult
 var tests = TestMap{
 	"tovarecom": {
 		URL:        "https://www.tovare.com/",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+		Duration:   0,
+	},
+	"tovarecom-hybrids": {
+		URL:        "https://tovare.com/2020/hybrids-start/",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+		Duration:   0,
+	},
+	"tovarecom-dashboard": {
+		URL:        "https://tovare.com/dashboard/",
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,
@@ -61,7 +76,12 @@ var tests = TestMap{
 // RunTest runs all the tests and compares to prior test. If
 // the state of a service changes from prior test an email is
 // sent.
+//
 // gcloud functions deploy RunTests --memory=128 --runtime go113 --trigger-topic monitor
+//
+// The trigger is sent every 5 minutes using the Clooud Trigger feature
+// in Google Cloud.
+//
 func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 
 	// Run all tests
@@ -69,6 +89,7 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 		start := time.Now()
 		t := TestURL(tests[i])
 		t.Duration = time.Since(start)
+		t.DurationMS = int64(t.Duration / 1000)
 		t.Tested = start
 		tests[i] = t
 	}

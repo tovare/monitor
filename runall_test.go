@@ -10,6 +10,7 @@ func TestRunTests(t *testing.T) {
 }
 
 func TestWriteToDatabase(t *testing.T) {
+	// Slight risk of a lost test.
 	m, err := ReadDatabase(context.Background(), tests)
 	err = WriteToDatabase(context.Background(), m)
 	if err != nil {
