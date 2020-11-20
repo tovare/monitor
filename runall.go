@@ -89,7 +89,7 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 		start := time.Now()
 		t := TestURL(tests[i])
 		t.Duration = time.Since(start)
-		t.DurationMS = int64(t.Duration / 1000)
+		t.DurationMS = int64(t.Duration / 1000000)
 		t.Tested = start
 		tests[i] = t
 	}
