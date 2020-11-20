@@ -2,6 +2,7 @@ package uptime
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -17,8 +18,9 @@ type PubSubMessage struct {
 
 // Test Definitions
 type TestResult struct {
+	Name       string        `firestore:"name,omitempty"`
 	URL        string        `firestore:"url,omitempty"`
-	StatusCode int           `firestore:"lastresult,omitempty"`
+	StatusCode int           `firestore:"statuscode,omitempty"`
 	Tested     time.Time     `firestore:"testedtime,omitempty"`
 	Success    bool          `firestore:"success"`
 	Duration   time.Duration `firestore:"duration,omitempty"`
@@ -28,15 +30,16 @@ type TestResult struct {
 type TestMap map[string]TestResult
 
 // Save implements the BigQuery ValueSaver interface and uses a best effort
-// de-duplicator.
+// de-duplicator. TODO: Need key.
 func (i *TestResult) Save() (map[string]bigquery.Value, string, error) {
 	return map[string]bigquery.Value{
-		"testedtime": i.Tested,
-		"url":        i.URL,
-		"lastresult": i.StatusCode,
-		"success":    i.Success,
-		"duration":   i.Duration,
-		"durationms": i.DurationMS,
+		"Name":       i.Name,
+		"URL":        i.URL,
+		"StatusCode": i.StatusCode,
+		"Tested":     i.Tested,
+		"Success":    i.Success,
+		"Duration":   i.Duration,
+		"DurationMS": i.DurationMS,
 	}, bigquery.NoDedupeID, nil
 }
 
@@ -44,13 +47,15 @@ func (i *TestResult) Save() (map[string]bigquery.Value, string, error) {
 // if any changes are done to tests it will only new tests will be added to the databae.
 var tests = TestMap{
 	"tovarecom": {
-		URL:        "https://www.tovare.com/",
+		Name:       "tovarecom",
+		URL:        "https://tovare.com/",
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,
 		Duration:   0,
 	},
 	"tovarecom-hybrids": {
+		Name:       "tovarecom-hybrids",
 		URL:        "https://tovare.com/2020/hybrids-start/",
 		StatusCode: 200,
 		Tested:     time.Now(),
@@ -58,6 +63,7 @@ var tests = TestMap{
 		Duration:   0,
 	},
 	"tovarecom-dashboard": {
+		Name:       "tovarecom-dashboard",
 		URL:        "https://tovare.com/dashboard/",
 		StatusCode: 200,
 		Tested:     time.Now(),
@@ -65,6 +71,7 @@ var tests = TestMap{
 		Duration:   0,
 	},
 	"alleyoop": {
+		Name:       "alleyoop",
 		URL:        "https://alleyoop.no/",
 		StatusCode: 200,
 		Tested:     time.Now(),
@@ -72,6 +79,7 @@ var tests = TestMap{
 		Duration:   0,
 	},
 	"navno": {
+		Name:       "navno",
 		URL:        "https://nav.no/",
 		StatusCode: 200,
 		Tested:     time.Now(),
@@ -79,6 +87,7 @@ var tests = TestMap{
 		Duration:   0,
 	},
 	"arbeidsplassen": {
+		Name:       "arbeidsplassen",
 		URL:        "https://arbeidsplassen.nav.no/",
 		StatusCode: 200,
 		Tested:     time.Now(),
@@ -126,14 +135,20 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 	if err != nil {
 		return
 	}
+	// Report on the list of changes by sending an
+	// email for each of them.
 
 	if len(changes) > 0 {
-		// Report on the list of changes by sending an
-		// email for each of them.
 		err = SendAlertEmail(ctx)
 		if err != nil {
 			return
 		}
+	}
+
+	// Stream data to BigQuery
+	err = StreamToBigQuery(ctx, tests)
+	if err != nil {
+		return err
 	}
 	return
 }
@@ -220,4 +235,21 @@ func StreamToBigQuery(ctx context.Context, tests TestMap) error {
 	datasetID := "monitor"
 	tableID := "testlog"
 
+	client, err := bigquery.NewClient(ctx, projectID)
+	if err != nil {
+		return fmt.Errorf("bigquery.NewClient: %v", err)
+	}
+	defer client.Close()
+
+	inserter := client.Dataset(datasetID).Table(tableID).Inserter()
+
+	testresults := make([]*TestResult, 0)
+	for _, v := range tests {
+		x := v
+		testresults = append(testresults, &x)
+	}
+	if err := inserter.Put(ctx, testresults); err != nil {
+		return err
+	}
+	return nil
 }

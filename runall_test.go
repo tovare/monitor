@@ -6,7 +6,10 @@ import (
 )
 
 func TestRunTests(t *testing.T) {
-	RunTests(context.Background(), PubSubMessage{[]byte("hello")})
+	err := RunTests(context.Background(), PubSubMessage{[]byte("hello")})
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestWriteToDatabase(t *testing.T) {
