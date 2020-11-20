@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"cloud.google.com/go/bigquery"
 	"cloud.google.com/go/firestore"
 )
 
@@ -25,6 +26,19 @@ type TestResult struct {
 }
 
 type TestMap map[string]TestResult
+
+// Save implements the BigQuery ValueSaver interface and uses a best effort
+// de-duplicator.
+func (i *TestResult) Save() (map[string]bigquery.Value, string, error) {
+	return map[string]bigquery.Value{
+		"testedtime": i.Tested,
+		"url":        i.URL,
+		"lastresult": i.StatusCode,
+		"success":    i.Success,
+		"duration":   i.Duration,
+		"durationms": i.DurationMS,
+	}, bigquery.NoDedupeID, nil
+}
 
 // tests i prepopulated with all tests. Data will be overwritten by contents in the database.
 // if any changes are done to tests it will only new tests will be added to the databae.
@@ -199,4 +213,11 @@ func ReadDatabase(ctx context.Context, tests TestMap) (m TestMap, err error) {
 		}
 	}
 	return
+}
+
+func StreamToBigQuery(ctx context.Context, tests TestMap) error {
+	projectID := "homepage-961"
+	datasetID := "monitor"
+	tableID := "testlog"
+
 }
