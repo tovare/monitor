@@ -67,6 +67,30 @@ var tests = TestMap{
 		Success:    true,
 		Duration:   0,
 	},
+	"idebanken": {
+		Name:       "idebanken",
+		URL:        "http://idebanken.no",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+		Duration:   0,
+	},
+	"navnofamilie": {
+		Name:       "navnofamilie",
+		URL:        "http://familie.nav.no",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+		Duration:   0,
+	},
+	"data.nav.no": {
+		Name:       "data.nav.no",
+		URL:        "http://data.nav.no",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+		Duration:   0,
+	},
 }
 
 // RunTest runs all the tests and compares to prior test. If
