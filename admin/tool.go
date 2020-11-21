@@ -37,8 +37,9 @@ func createDataset(projectID, datasetID string) error {
 	return nil
 }
 
-// createTableExplicitSchema demonstrates creating a new BigQuery table and specifying a schema.
-func createTableExplicitSchema(projectID, datasetID, tableID string) error {
+// createTestResultTable create a new table of TestResults. The procedure
+// will fail if the table allready exists.
+func createTestResultTable(projectID, datasetID, tableID string) error {
 
 	fmt.Println("Creating table schema. Use once only.")
 
@@ -83,7 +84,7 @@ func createTableExplicitSchema(projectID, datasetID, tableID string) error {
 
 func main() {
 	// createDataset("homepage-961", "monitor")
-	err := createTableExplicitSchema("homepage-961", "monitor", "uptime")
+	err := createTestResultTable("homepage-961", "monitor", "uptime")
 	if err != nil {
 		log.Fatal(err)
 	}
