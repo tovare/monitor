@@ -1,6 +1,10 @@
 package uptime
 
-import "time"
+import (
+	"time"
+
+	"cloud.google.com/go/bigquery"
+)
 
 // Test Definitions
 type TestResult struct {
@@ -14,3 +18,18 @@ type TestResult struct {
 }
 
 type TestMap map[string]TestResult
+
+// Save implements the BigQuery ValueSaver interface and uses a best effort
+// de-duplicator. The list below needs to be in sync with the above since I
+// opted not to map at runtime through introspection.
+func (i *TestResult) Save() (map[string]bigquery.Value, string, error) {
+	return map[string]bigquery.Value{
+		"name":       i.Name,
+		"url":        i.URL,
+		"statuscode": i.StatusCode,
+		"testedtime": i.Tested,
+		"success":    i.Success,
+		"duration":   i.Duration,
+		"durationms": i.DurationMS,
+	}, bigquery.NoDedupeID, nil
+}

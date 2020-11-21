@@ -16,20 +16,6 @@ type PubSubMessage struct {
 	Data []byte `json:"data"`
 }
 
-// Save implements the BigQuery ValueSaver interface and uses a best effort
-// de-duplicator. TODO: Need key.
-func (i *TestResult) Save() (map[string]bigquery.Value, string, error) {
-	return map[string]bigquery.Value{
-		"Name":       i.Name,
-		"URL":        i.URL,
-		"StatusCode": i.StatusCode,
-		"Tested":     i.Tested,
-		"Success":    i.Success,
-		"Duration":   i.Duration,
-		"DurationMS": i.DurationMS,
-	}, bigquery.NoDedupeID, nil
-}
-
 // tests i prepopulated with all tests. Data will be overwritten by contents in the database.
 // if any changes are done to tests it will only new tests will be added to the databae.
 var tests = TestMap{
