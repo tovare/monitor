@@ -19,8 +19,8 @@ Each time all tests are executed the results are stored in Firestore.
 
 # Future improvements
 
-- [50]  Find keywords on the page. Added it to the struct.
-- [  ]  Migrate streaming.
+- [50]  Find keywords on the page. Added it to the struct. Does not stream to BigQuery.
+- [--]  Migrate streaming.
 - [  ]  Improve email alerts with a list of services and their status.
 - [OK]  consolidate command tool for management.
 - [OK]  Store the time for each test.
