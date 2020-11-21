@@ -64,7 +64,6 @@ func createTableExplicitSchema(projectID, datasetID, tableID string) error {
 
 func main() {
 	// createDataset("homepage-961", "monitor")
-
-	createTableExplicitSchema("homepage-961", "monitor", "testlog")
+	createTableExplicitSchema("homepage-961", "monitor", "uptime")
 
 }

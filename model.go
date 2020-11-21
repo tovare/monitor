@@ -15,6 +15,7 @@ type TestResult struct {
 	Success    bool          `firestore:"success" bigquery:"success,nullable"`
 	Duration   time.Duration `firestore:"duration,omitempty" bigquery:"duration,nullable"`
 	DurationMS int64         `firestore:"durationms,omitempty" bigquery:"durationms,nullable"`
+	ErrorMsg   string        `firestore:"errormsg,omitempty" bigquery:"errormsg,nullable"`
 }
 
 type TestMap map[string]TestResult
@@ -31,5 +32,6 @@ func (i *TestResult) Save() (map[string]bigquery.Value, string, error) {
 		"success":    i.Success,
 		"duration":   i.Duration,
 		"durationms": i.DurationMS,
+		"errormsg":   i.ErrorMsg,
 	}, bigquery.NoDedupeID, nil
 }

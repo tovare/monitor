@@ -137,6 +137,7 @@ func TestURL(test TestResult) TestResult {
 			test.StatusCode = -1
 		}
 		test.Success = false
+		test.ErrorMsg = err
 		return test
 	}
 	defer resp.Body.Close()
@@ -145,6 +146,7 @@ func TestURL(test TestResult) TestResult {
 	} else {
 		test.StatusCode = resp.StatusCode
 		test.Success = false
+		test.ErrorMsg = http.StatusText(resp.StatusCode)
 	}
 	_, err = ioutil.ReadAll(resp.Body)
 
