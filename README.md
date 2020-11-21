@@ -19,5 +19,8 @@ Each time all tests are executed the results are stored in Firestore.
 
 # Future improvements
 
-* Store the time for each test.
-* Find keyword.
+- [  ]  Find keyword.
+- [  ]  Annotate struct for bigquery for coosistency.
+- [  ]  Migrate streaming.
+- [OK]  Store the time for each test.
+
