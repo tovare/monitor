@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	uptime "github.com/tovare/monitor"
@@ -49,7 +50,25 @@ func createTableExplicitSchema(projectID, datasetID, tableID string) error {
 	}
 	defer client.Close()
 
-	sampleSchema, err := bigquery.InferSchema(uptime.TestResult{})
+	sampleSchema, err := bigquery.InferSchema(uptime.TestResult{
+		Name:       "tovarecom",
+		URL:        "https://tovare.com/",
+		StatusCode: 200,
+		Tested:     time.Now(),
+		Success:    true,
+		Duration:   0,
+		ErrorMsg:   "",
+	})
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	// Print out
+	fmt.Println("The result of the schema interpretation:")
+	fmt.Println("--------------------------------")
+	for _, fs := range sampleSchema {
+		fmt.Println(fs.Name, fs.Type, fs.Required)
+	}
 
 	metaData := &bigquery.TableMetadata{
 		Schema:         sampleSchema,
@@ -64,6 +83,9 @@ func createTableExplicitSchema(projectID, datasetID, tableID string) error {
 
 func main() {
 	// createDataset("homepage-961", "monitor")
-	createTableExplicitSchema("homepage-961", "monitor", "uptime")
+	err := createTableExplicitSchema("homepage-961", "monitor", "uptime")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }

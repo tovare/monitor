@@ -8,14 +8,15 @@ import (
 
 // Test Definitions
 type TestResult struct {
-	Name       string        `firestore:"name,omitempty" bigquery:"name"`
-	URL        string        `firestore:"url,omitempty" bigquery:"url,nullable"`
-	StatusCode int           `firestore:"statuscode,omitempty" bigquery:"statuscode,nullable"`
-	Tested     time.Time     `firestore:"testedtime,omitempty" bigquery:"testedtime,nullable"`
-	Success    bool          `firestore:"success" bigquery:"success,nullable"`
-	Duration   time.Duration `firestore:"duration,omitempty" bigquery:"duration,nullable"`
-	DurationMS int64         `firestore:"durationms,omitempty" bigquery:"durationms,nullable"`
-	ErrorMsg   string        `firestore:"errormsg,omitempty" bigquery:"errormsg,nullable"`
+	Name       string        `firestore:"name" bigquery:"name"`
+	URL        string        `firestore:"url" bigquery:"url"`
+	StatusCode int           `firestore:"statuscode" bigquery:"statuscode"`
+	Tested     time.Time     `firestore:"testedtime" bigquery:"testedtime"`
+	Success    bool          `firestore:"success" bigquery:"success"`
+	Duration   time.Duration `firestore:"duration" bigquery:"duration"`
+	DurationMS int64         `firestore:"durationms" bigquery:"durationms"`
+	ErrorMsg   string        `firestore:"errormsg" bigquery:"errormsg"`
+	TestString string        `firestore:"teststring" bigquery:"-"`
 }
 
 type TestMap map[string]TestResult

@@ -137,7 +137,7 @@ func TestURL(test TestResult) TestResult {
 			test.StatusCode = -1
 		}
 		test.Success = false
-		test.ErrorMsg = err
+		test.ErrorMsg = err.Error()
 		return test
 	}
 	defer resp.Body.Close()
@@ -208,7 +208,7 @@ func ReadDatabase(ctx context.Context, tests TestMap) (m TestMap, err error) {
 func StreamToBigQuery(ctx context.Context, tests TestMap) error {
 	projectID := "homepage-961"
 	datasetID := "monitor"
-	tableID := "testlog"
+	tableID := "uptime"
 
 	client, err := bigquery.NewClient(ctx, projectID)
 	if err != nil {
