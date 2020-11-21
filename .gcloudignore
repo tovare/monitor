@@ -14,3 +14,9 @@
 .gitignore
 
 node_modules
+debug.test
+template/package-lock.json
+workspace.code-workspace
+.vscode
+admin
+INFO.md 
