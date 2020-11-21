@@ -12,6 +12,7 @@ import (
 )
 
 // createDataset demonstrates creation of a new dataset using an explicit destination location.
+// This is used once only.
 func createDataset(projectID, datasetID string) error {
 
 	fmt.Print("Creating BigQuery dataset")

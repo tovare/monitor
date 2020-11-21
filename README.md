@@ -21,7 +21,8 @@ Each time all tests are executed the results are stored in Firestore.
 
 - [  ]  Find keyword on the page.
 - [  ]  Migrate streaming.
-- [  ]  consolidate command tool for management.
+- [  ]  Improve email alerts with a list of services and their status.
+- [OK]  consolidate command tool for management.
 - [OK]  Store the time for each test.
 - [OK]  Annotate struct for BigQuery for consistency.
 
