@@ -19,7 +19,7 @@ Each time all tests are executed the results are stored in Firestore.
 
 # Future improvements
 
-- [  ]  Find keyword on page.
+- [  ]  Find keyword on the page.
 - [  ]  Migrate streaming.
 - [  ]  consolidate command tool for management.
 - [OK]  Store the time for each test.
