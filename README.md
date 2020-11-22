@@ -14,6 +14,7 @@ Each time all tests are executed the results are stored in Firestore.
 # Streaming into BigQuery
 
 * [Streaming](https://cloud.google.com/bigquery/streaming-data-into-bigquery)
+* [DOC](https://godoc.org/cloud.google.com/go/bigquery)
 
 
 
