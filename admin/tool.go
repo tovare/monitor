@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"time"
 
 	uptime "github.com/tovare/monitor"
@@ -158,9 +157,9 @@ func main() {
 	// createDataset("homepage-961", "monitor")
 	// err := createTestResultTable("homepage-961", "monitor", "uptime")
 	// err := printDatasetInfo(os.Stdout, "homepage-961", "monitor")
-	err := findLastRecord("homepage-961", "monitor", "uptime")
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	//err := findLastRecord("homepage-961", "monitor", "uptime")
+	//if err != nil {
+	//		log.Fatal(err)
+	//}
+	Roundtrip()
 }
