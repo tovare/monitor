@@ -69,7 +69,7 @@ var tests = TestMap{
 	},
 	"idebanken": {
 		Name:       "idebanken",
-		URL:        "http://idebanken.no",
+		URL:        "https://idebanken.no",
 		StatusCode: 200,
 		Tested:     time.Now(),
 		Success:    true,

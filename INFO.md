@@ -10,6 +10,6 @@ Commands:
   gcloud firestore databases create --region=europe-west
 
 
-  gcloud functions deploy RunTests --memory=128 --runtime go113 --trigger-topic monitor
+  gcloud functions deploy RunTests --memory=256 --runtime go113 --trigger-topic monitor
 ```
 
