@@ -9,6 +9,7 @@ import (
 
 	"cloud.google.com/go/bigquery"
 	"cloud.google.com/go/firestore"
+	"go.uber.org/ratelimit"
 )
 
 // PubSubMessage is the payload of a Pub/Sub event.
@@ -184,29 +185,42 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 
 // TestURL runs a single test and returns the test-results.
 func TestURL(test TestResult) TestResult {
-
-	resp, err := http.Get(test.URL)
-	if err != nil {
-		if resp != nil {
-			test.StatusCode = resp.StatusCode
+	var (
+		resp  *http.Response
+		err   error
+		tries int = 4 // Try to access a site 4 times before failing.
+	)
+	rl := ratelimit.New(1) // 1 request/second.
+	for i := 0; i < tries; i++ {
+		resp, err = http.Get(test.URL)
+		if err != nil {
+			if resp != nil {
+				// 500 Internal server error
+				test.StatusCode = resp.StatusCode
+			} else {
+				// Examples:
+				// connection reset by peer
+				// TLS handshake timeout
+				// i/o timeout
+				test.StatusCode = -1
+			}
+			test.Success = false
+			test.ErrorMsg = err.Error()
 		} else {
-			test.StatusCode = -1
+			defer resp.Body.Close()
+			if resp.StatusCode == 200 {
+				test.Success = true
+				_, err = ioutil.ReadAll(resp.Body)
+				// TODO: Extend with content check.
+				break
+			} else {
+				test.StatusCode = resp.StatusCode
+				test.Success = false
+				test.ErrorMsg = http.StatusText(resp.StatusCode)
+			}
 		}
-		test.Success = false
-		test.ErrorMsg = err.Error()
-		return test
+		rl.Take()
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode == 200 {
-		test.Success = true
-	} else {
-		test.StatusCode = resp.StatusCode
-		test.Success = false
-		test.ErrorMsg = http.StatusText(resp.StatusCode)
-	}
-	_, err = ioutil.ReadAll(resp.Body)
-
-	// TODO: Extend with content check.
 	return test
 }
 

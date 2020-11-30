@@ -49,3 +49,16 @@ func TestSendAlertEmail(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestTestURL(t *testing.T) {
+	x := TestResult{
+		Name:       "test",
+		URL:        "https://www.example.com",
+		TestString: "nothing",
+	}
+	x = TestURL(x)
+	if x.Success == false {
+		t.Error(x.ErrorMsg)
+	}
+
+}
