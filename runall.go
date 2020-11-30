@@ -141,6 +141,7 @@ func RunTests(ctx context.Context, m PubSubMessage) (err error) {
 	for i := range tests {
 		start := time.Now()
 		t := TestURL(tests[i])
+		// Retries is included in response times.
 		t.Duration = time.Since(start)
 		t.DurationMS = int64(t.Duration / 1000000)
 		t.Tested = start
